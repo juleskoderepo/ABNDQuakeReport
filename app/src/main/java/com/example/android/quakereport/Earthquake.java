@@ -1,5 +1,7 @@
 package com.example.android.quakereport;
 
+import java.util.Date;
+
 /**
  * {@link Earthquake} represents an occurrence of an earthquake. It contains
  * a magnitute, location, and time.
@@ -19,18 +21,18 @@ public class Earthquake  {
     /**
      * Date and time when the earthquake occurred.
      */
-    private String DateTime;
+    private long DateTime;
 
     /**
      * Contructs a new Earthquake object with a magnitude, location and date/time.
      * @param magnitude magnitude of the earthquake.
      * @param location location closest to the earthquake epicenter.
-     * @param dateTime when the earthquake occurred.
+     * @param timeInMillisecs time in milliseconds of when the earthquake occurred.
      */
-    public Earthquake(String magnitude, String location, String dateTime){
+    public Earthquake(String magnitude, String location, long timeInMillisecs){
         Magnitude = magnitude;
         Location = location;
-        DateTime = dateTime;
+        DateTime = timeInMillisecs;
     }
 
     /**
@@ -52,5 +54,5 @@ public class Earthquake  {
      *
      * @return Date/time when the earthquake occurred.
      */
-    public String getDateTime() {return DateTime;}
+    public long getDateTime() {return DateTime;}
 }
