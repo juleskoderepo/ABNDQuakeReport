@@ -72,11 +72,12 @@ public final class QueryUtils {
                 JSONObject quakeObject = (JSONObject) quakeFeaturesArray.get(i);
                 JSONObject quakeProperties = quakeObject.getJSONObject("properties");
 
-                String mag = quakeProperties.getString("mag");
+                double mag = quakeProperties.getDouble("mag");
                 String place = quakeProperties.getString("place");
                 long time = quakeProperties.getLong("time");
+                String url = quakeProperties.getString("url");
 
-                Earthquake quakeItem = new Earthquake(mag,place,time);
+                Earthquake quakeItem = new Earthquake(mag,place,time,url);
 
                 earthquakes.add(quakeItem);
             }

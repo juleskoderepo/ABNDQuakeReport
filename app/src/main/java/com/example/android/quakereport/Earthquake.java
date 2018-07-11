@@ -11,7 +11,7 @@ public class Earthquake  {
     /**
      * Magnitude of an earthquake.
      */
-    private String Magnitude;
+    private double Magnitude;
 
     /**
      * The location closest to where the earthquake occurred.
@@ -24,15 +24,21 @@ public class Earthquake  {
     private long DateTime;
 
     /**
+     * URL on the USGS website for the specific earthquake
+     */
+    private String Website;
+
+    /**
      * Contructs a new Earthquake object with a magnitude, location and date/time.
      * @param magnitude magnitude of the earthquake.
      * @param location location closest to the earthquake epicenter.
      * @param timeInMillisecs time in milliseconds of when the earthquake occurred.
      */
-    public Earthquake(String magnitude, String location, long timeInMillisecs){
+    public Earthquake(double magnitude, String location, long timeInMillisecs, String url){
         Magnitude = magnitude;
         Location = location;
         DateTime = timeInMillisecs;
+        Website = url;
     }
 
     /**
@@ -40,7 +46,7 @@ public class Earthquake  {
      *
      * @return Magnitude to display in the app.
      */
-    public String getMagnitude(){return Magnitude;}
+    public double getMagnitude(){return Magnitude;}
 
     /**
      * Gets the location of the earthquake.
@@ -55,4 +61,10 @@ public class Earthquake  {
      * @return Date/time when the earthquake occurred.
      */
     public long getDateTime() {return DateTime;}
+
+    /**
+     * Gets the USGS web page for the specific earthquake
+     * @return URL for the web page containing additional data for a specific earthquake
+     */
+    public String getWebsite() {return Website;}
 }
