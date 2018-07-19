@@ -35,6 +35,7 @@ public class EarthquakeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
+        // TODO: Create and execute AsyncTask in the onCreate method
         // Create a list of earthquake locations.
         final ArrayList<Earthquake> earthquakes = QueryUtils.extractEarthquakes();
 
@@ -61,4 +62,6 @@ public class EarthquakeActivity extends AppCompatActivity {
         });
 
     }
+
+    // TODO: Declare AsyncTask class as inner class
 }

@@ -156,6 +156,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         int magnitudeColor;
 
         switch(magInt){
+            case 0:
             case 1:
                 magnitudeColor = ContextCompat.getColor(getContext(),R.color.magnitude1);
                 break;
