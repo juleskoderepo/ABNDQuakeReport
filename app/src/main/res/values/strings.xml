@@ -15,10 +15,4 @@
 -->
 <resources>
     <string name="app_name">Quake Report</string>
-    <string name="ioexception_input_stream_log_msg">Error closing input stream</string>
-    <string name="bad_url_log_msg">Error with creating URL</string>
-    <string name="error_response_code">Error response code: </string>
-    <string name="ioexception_json_log_msg">Problem retrieving earthquake JSON results.</string>
-    <string name="json_parsing_error">Problem parsing the earthquake JSON results</string>
-
 </resources>

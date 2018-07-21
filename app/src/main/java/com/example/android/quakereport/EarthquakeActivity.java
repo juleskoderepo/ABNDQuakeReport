@@ -15,36 +15,39 @@
  */
 package com.example.android.quakereport;
 
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity
+    implements LoaderManager.LoaderCallbacks<List<Earthquake>>{
 
-    public static final String LOG_TAG = EarthquakeActivity.class.getName();
     private static final String USGS_REQUEST_URL =
             "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
 
+    private static final int EQ_LOADER_ID = 0;
+
     // Declare global adapter variable
-    EarthquakeAdapter adapter;
+    static EarthquakeAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
-        EarthquakeAsyncTask earthquakeTask = new EarthquakeAsyncTask();
-        earthquakeTask.execute(USGS_REQUEST_URL);
+        // Prepare the loader
+        getLoaderManager().initLoader(EQ_LOADER_ID, null, this);
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = findViewById(R.id.list);
@@ -70,39 +73,58 @@ public class EarthquakeActivity extends AppCompatActivity {
 
     }
 
-    private class EarthquakeAsyncTask extends AsyncTask<String,Void,List<Earthquake>>{
+    @Override
+    public Loader<List<Earthquake>> onCreateLoader(int id, Bundle args) {
+        return new EarthquakeLoader(EarthquakeActivity.this, USGS_REQUEST_URL);
+    }
 
-        /**
-         * This method is called to make a network request on a background thread as it is not
-         * allowed on the main thread.
-         *
-         * @param urls A String list of one or more urls.
-         * @return List of earthquake objects or null if no url or null url.
-         */
+    @Override
+    public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+        // exit early if no response
+        if(earthquakes == null){
+            return;
+        }
+
+        // update the UI
+        updateUI(earthquakes);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Earthquake>> loader) {
+        // Loader reset so clear the adapter of previous earthquake data
+        adapter.clear();
+
+    }
+
+    public static class EarthquakeLoader extends AsyncTaskLoader<List<Earthquake>>{
+
+        private String url;
+
+        private EarthquakeLoader(Context context, String requestUrl) {
+            super(context);
+            url = requestUrl;
+
+        }
+
         @Override
-        protected List<Earthquake> doInBackground(String... urls) {
-            if(urls.length < 1 || urls[0] == null){
+        protected void onStartLoading() {
+            forceLoad();
+        }
+
+        @Override
+        public List<Earthquake> loadInBackground() {
+            // return early if URL is null
+            if(url == null){
                 return null;
             }
 
-            return QueryUtils.fetchEarthquakeData(urls[0], EarthquakeActivity.this);
-        }
+            List<Earthquake> earthquakesList = QueryUtils.fetchEarthquakeData(url);
 
-        @Override
-        protected void onPostExecute(List<Earthquake> earthquakes) {
-            super.onPostExecute(earthquakes);
-
-            // exit early if no response
-            if(earthquakes == null){
-                return;
-            }
-
-            // update the UI
-            updateUI(earthquakes);
+            return earthquakesList;
         }
     }
 
-    private void updateUI(List<Earthquake> earthquakes){
+    private static void updateUI(List<Earthquake> earthquakes){
         // Clear the adapter of previous earthquake data
         adapter.clear();
 
@@ -112,4 +134,5 @@ public class EarthquakeActivity extends AppCompatActivity {
             adapter.addAll(earthquakes);
         }
     }
+
 }

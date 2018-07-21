@@ -40,42 +40,40 @@ public final class QueryUtils {
      * Query the USGS dataset and return a {@link List} object of earthquakes
      *
      * @param requestUrl URL string to request data from the USGS
-     * @param context Reference to the application context to access string resources
      * @return List of earthquake objects
      */
-    public static List<Earthquake> fetchEarthquakeData(String requestUrl, Context context){
+    public static List<Earthquake> fetchEarthquakeData(String requestUrl){
 
-        Context c = context;
         // Create URL object
-        URL url = createUrl(requestUrl, c);
+        URL url = createUrl(requestUrl);
 
         String jsonResponse = null;
         try{
-            jsonResponse = makeHttpRequest(url, c);
+            jsonResponse = makeHttpRequest(url);
         } catch (IOException e){
-            Log.e(LOG_TAG, c.getString(R.string.ioexception_input_stream_log_msg), e);
+            Log.e(LOG_TAG, "Error closing input stream", e);
         }
 
         // Extract fields from the JSON response and create a {@link List} object
-        List<Earthquake> earthquakes = extractEarthquakes(jsonResponse, c);
+        List<Earthquake> earthquakes = extractEarthquakes(jsonResponse);
 
         // Return the {@link List}
         return earthquakes;
     }
 
-    private static URL createUrl(String stringUrl, Context c){
+    private static URL createUrl(String stringUrl){
         URL url = null;
 
         try{
             url = new URL(stringUrl);
         } catch(MalformedURLException e){
-            Log.e(LOG_TAG,c.getString(R.string.bad_url_log_msg), e);
+            Log.e(LOG_TAG,"Error with creating URL", e);
         }
 
         return url;
     }
 
-    private static String makeHttpRequest(URL url, Context c) throws IOException {
+    private static String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
 
         // if URL is null, then return early.
@@ -98,10 +96,10 @@ public final class QueryUtils {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             } else {
-                Log.e(LOG_TAG,c.getString(R.string.error_response_code) + urlConnection.getResponseCode());
+                Log.e(LOG_TAG,"Error response code: " + urlConnection.getResponseCode());
             }
         } catch(IOException e){
-            Log.e(LOG_TAG,c.getString(R.string.ioexception_json_log_msg), e);
+            Log.e(LOG_TAG,"Problem retrieving earthquake JSON results", e);
         } finally {
             // Release the connection
             if(urlConnection != null){
@@ -143,7 +141,7 @@ public final class QueryUtils {
      * Return a list of {@link Earthquake} objects that has been built up from
      * parsing a string containing the JSON response from the server.
      */
-    private static List<Earthquake> extractEarthquakes(String jsonResponse, Context c) {
+    private static List<Earthquake> extractEarthquakes(String jsonResponse) {
         // return early if JSON string is null
         if(TextUtils.isEmpty(jsonResponse)){
             return null;
@@ -178,7 +176,7 @@ public final class QueryUtils {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
             // with the message from the exception.
-            Log.e(LOG_TAG, c.getString(R.string.json_parsing_error), e);
+            Log.e(LOG_TAG, "Problem parsing the earthquake JSON results", e);
         }
         // Return the list of earthquakes
         return earthquakes;

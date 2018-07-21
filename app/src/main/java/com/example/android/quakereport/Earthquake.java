@@ -29,10 +29,12 @@ public class Earthquake  {
     private String Website;
 
     /**
-     * Contructs a new Earthquake object with a magnitude, location and date/time.
+     * Contructs a new Earthquake object with a magnitude, location, date/time, and URL.
+     *
      * @param magnitude magnitude of the earthquake.
      * @param location location closest to the earthquake epicenter.
      * @param timeInMillisecs time in milliseconds of when the earthquake occurred.
+     * @param url USGS website for the specific earthquake
      */
     public Earthquake(double magnitude, String location, long timeInMillisecs, String url){
         Magnitude = magnitude;
