@@ -20,6 +20,8 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +41,7 @@ public class EarthquakeActivity extends AppCompatActivity
     private static final String USGS_REQUEST_URL =
             "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
     private static final int EQ_LOADER_ID = 0;
-    private static final String LOG_TAG = EarthquakeActivity.class.getSimpleName();
+    //private static final String LOG_TAG = EarthquakeActivity.class.getSimpleName();
 
     private TextView emptyTV;
     private ProgressBar progressBar;
@@ -55,9 +57,21 @@ public class EarthquakeActivity extends AppCompatActivity
         emptyTV = findViewById(R.id.empty_textview);
         progressBar = findViewById(R.id.loading_spinner);
 
-        // Prepare the loader
-        Log.e(LOG_TAG,"initLoader method called");
-        getLoaderManager().initLoader(EQ_LOADER_ID, null, this);
+        // Check for network connectivity
+        ConnectivityManager cm =
+                (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        if(isConnected) {
+            // Prepare the loader
+            //Log.e(LOG_TAG, "initLoader method called");
+            getLoaderManager().initLoader(EQ_LOADER_ID, null, this);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            emptyTV.setText(getString(R.string.no_internet_connection));
+        }
 
 
         // Find a reference to the {@link ListView} in the layout
@@ -90,14 +104,14 @@ public class EarthquakeActivity extends AppCompatActivity
 
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int id, Bundle args) {
-        Log.e(LOG_TAG,"Creating new EarthquakeLoader");
+        // Log.e(LOG_TAG,"Creating new EarthquakeLoader");
         return new EarthquakeLoader(EarthquakeActivity.this, USGS_REQUEST_URL);
 
     }
 
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
-        Log.e(LOG_TAG,"Loader work completed. onLoadFinished method called");
+        //Log.e(LOG_TAG,"Loader work completed. onLoadFinished method called");
 
         progressBar.setVisibility(View.GONE);
         emptyTV.setText(getString(R.string.no_earthquakes_found));
@@ -113,7 +127,7 @@ public class EarthquakeActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<List<Earthquake>> loader) {
-        Log.e(LOG_TAG,"Loader reset");
+        // Log.e(LOG_TAG,"Loader reset");
         // Loader reset so clear the adapter of previous earthquake data
         adapter.clear();
 
@@ -131,13 +145,13 @@ public class EarthquakeActivity extends AppCompatActivity
 
         @Override
         protected void onStartLoading() {
-            Log.e(LOG_TAG,"Start loading called");
+            // Log.e(LOG_TAG,"Start loading called");
             forceLoad();
         }
 
         @Override
         public List<Earthquake> loadInBackground() {
-            Log.e(LOG_TAG,"Load on background thread started");
+            // Log.e(LOG_TAG,"Load on background thread started");
             // return early if URL is null
             if(url == null){
                 return null;
