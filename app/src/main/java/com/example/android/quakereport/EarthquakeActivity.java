@@ -23,6 +23,7 @@ import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -35,8 +36,8 @@ public class EarthquakeActivity extends AppCompatActivity
 
     private static final String USGS_REQUEST_URL =
             "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
-
     private static final int EQ_LOADER_ID = 0;
+    private static final String LOG_TAG = EarthquakeActivity.class.getSimpleName();
 
     // Declare global adapter variable
     static EarthquakeAdapter adapter;
@@ -47,7 +48,9 @@ public class EarthquakeActivity extends AppCompatActivity
         setContentView(R.layout.earthquake_activity);
 
         // Prepare the loader
+        Log.e(LOG_TAG,"initLoader method called");
         getLoaderManager().initLoader(EQ_LOADER_ID, null, this);
+
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = findViewById(R.id.list);
@@ -75,11 +78,14 @@ public class EarthquakeActivity extends AppCompatActivity
 
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int id, Bundle args) {
+        Log.e(LOG_TAG,"Creating new EarthquakeLoader");
         return new EarthquakeLoader(EarthquakeActivity.this, USGS_REQUEST_URL);
+
     }
 
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+        Log.e(LOG_TAG,"Loader work completed. onLoadFinished method called");
         // exit early if no response
         if(earthquakes == null){
             return;
@@ -91,6 +97,7 @@ public class EarthquakeActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<List<Earthquake>> loader) {
+        Log.e(LOG_TAG,"Loader reset");
         // Loader reset so clear the adapter of previous earthquake data
         adapter.clear();
 
@@ -108,11 +115,13 @@ public class EarthquakeActivity extends AppCompatActivity
 
         @Override
         protected void onStartLoading() {
+            Log.e(LOG_TAG,"Start loading called");
             forceLoad();
         }
 
         @Override
         public List<Earthquake> loadInBackground() {
+            Log.e(LOG_TAG,"Load on background thread started");
             // return early if URL is null
             if(url == null){
                 return null;
