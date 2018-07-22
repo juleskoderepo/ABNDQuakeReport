@@ -44,6 +44,14 @@ public final class QueryUtils {
      */
     public static List<Earthquake> fetchEarthquakeData(String requestUrl){
         Log.e(LOG_TAG,"Fetching earthquake data.");
+
+        // Simulate slow network response
+        try{
+            Thread.sleep(2000);
+        } catch(InterruptedException e){
+            e.printStackTrace();
+        }
+
         // Create URL object
         URL url = createUrl(requestUrl);
 

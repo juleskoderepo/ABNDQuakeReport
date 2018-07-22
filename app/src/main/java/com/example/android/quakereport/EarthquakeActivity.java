@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class EarthquakeActivity extends AppCompatActivity
     private static final String LOG_TAG = EarthquakeActivity.class.getSimpleName();
 
     private TextView emptyTV;
+    private ProgressBar progressBar;
 
     // Declare global adapter variable
     static EarthquakeAdapter adapter;
@@ -51,6 +53,7 @@ public class EarthquakeActivity extends AppCompatActivity
         setContentView(R.layout.earthquake_activity);
 
         emptyTV = findViewById(R.id.empty_textview);
+        progressBar = findViewById(R.id.loading_spinner);
 
         // Prepare the loader
         Log.e(LOG_TAG,"initLoader method called");
@@ -96,6 +99,7 @@ public class EarthquakeActivity extends AppCompatActivity
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
         Log.e(LOG_TAG,"Loader work completed. onLoadFinished method called");
 
+        progressBar.setVisibility(View.GONE);
         emptyTV.setText(getString(R.string.no_earthquakes_found));
 
         // exit early if no response
@@ -153,7 +157,7 @@ public class EarthquakeActivity extends AppCompatActivity
         // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
         if(earthquakes != null && !earthquakes.isEmpty()){
-            //adapter.addAll(earthquakes);
+            adapter.addAll(earthquakes);
         }
     }
 
