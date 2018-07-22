@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,8 @@ public class EarthquakeActivity extends AppCompatActivity
     private static final int EQ_LOADER_ID = 0;
     private static final String LOG_TAG = EarthquakeActivity.class.getSimpleName();
 
+    private TextView emptyTV;
+
     // Declare global adapter variable
     static EarthquakeAdapter adapter;
 
@@ -46,6 +49,8 @@ public class EarthquakeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
+
+        emptyTV = findViewById(R.id.empty_textview);
 
         // Prepare the loader
         Log.e(LOG_TAG,"initLoader method called");
@@ -62,6 +67,10 @@ public class EarthquakeActivity extends AppCompatActivity
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(adapter);
+
+        // Set the empty view on the {@link ListView) if the adapter is empty
+        View emptyView  = (View)emptyTV;
+        earthquakeListView.setEmptyView(emptyView);
 
         // open URL for select earthquake
         earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -86,6 +95,9 @@ public class EarthquakeActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
         Log.e(LOG_TAG,"Loader work completed. onLoadFinished method called");
+
+        emptyTV.setText(getString(R.string.no_earthquakes_found));
+
         // exit early if no response
         if(earthquakes == null){
             return;
@@ -127,7 +139,8 @@ public class EarthquakeActivity extends AppCompatActivity
                 return null;
             }
 
-            List<Earthquake> earthquakesList = QueryUtils.fetchEarthquakeData(url);
+            List<Earthquake> earthquakesList = null;
+            earthquakesList = QueryUtils.fetchEarthquakeData(url);
 
             return earthquakesList;
         }
@@ -140,7 +153,7 @@ public class EarthquakeActivity extends AppCompatActivity
         // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
         if(earthquakes != null && !earthquakes.isEmpty()){
-            adapter.addAll(earthquakes);
+            //adapter.addAll(earthquakes);
         }
     }
 
