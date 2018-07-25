@@ -10,7 +10,6 @@ More info on the USGS Earthquake API available at:
 https://earthquake.usgs.gov/fdsnws/event/1/
 
 <img src="/images/quakereport.png" width="270">
-![App image](/images/quakereport.png)
 
 Pre-requisites
 --------------
